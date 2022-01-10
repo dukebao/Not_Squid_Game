@@ -1,0 +1,2 @@
+class GameInstructionView:
+    pass

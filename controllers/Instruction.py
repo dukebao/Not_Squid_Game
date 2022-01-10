@@ -1,0 +1,2 @@
+class GameInstructionController:
+    pass
