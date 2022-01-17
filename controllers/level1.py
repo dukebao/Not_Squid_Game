@@ -114,6 +114,8 @@ class Level1Controller(PygameController):
                 print('you lost')
                 running = False
             
+            
+
             if self.player.x > 1100:
                 print('you win')
                 running = False
@@ -147,20 +149,22 @@ class Level1Controller(PygameController):
             elif elaspe < 1500 and elaspe > 0:
                 self.s1.moveto((1150,150))
                 self.s2.moveto((1150,350))
-                self.bullet1.x = self.s1.x
-                self.bullet1.y = self.s1.y
+                if self.bullet1.shoot_status is False:
+                    self.bullet1.x = self.s1.x
+                    self.bullet1.y = self.s1.y
             
-            
+    
             #save player location into a list 
             if elaspe < 3980 and elaspe > 3950:
-                print('recording location')
                 self.targets.append([self.player.x,self.player.y])
     
             if round_end == count:
-                if elaspe < 2000 and elaspe > 0:
+                if elaspe < 2000 and elaspe > 1900:
+                    self.bullet1.alive = True
                     if self.player.alive:
                         current_pos = [self.player.x,self.player.y]
                         if current_pos not in self.targets:
+                            # self.bullet1.alive = True
                             self.bullet1.shoot_status = True 
                             round_end = round_end + 1
 
@@ -174,11 +178,16 @@ class Level1Controller(PygameController):
             for item in objestlist:
                 if self.bullet1.check_hit(item):
                     item.alive = False
-     
+                    self.bullet1.alive = False
+                    self.bullet1.x = 0
+                    self.bullet1.y = 0
+            
             self.bullet1.update_pos()
             for item in objestlist:
                 item.update_pos()
+
+            print(elaspe)
             # print(self.player.hitbox)
             # print(self.a.hitbox)
-            
+            # print(self.bullet1.x,self.bullet1.y)
             
