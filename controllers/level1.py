@@ -1,5 +1,7 @@
 from logging import FATAL
 import pygame.locals
+
+from models.level1 import Enemy,Target
 from .base import PygameController
 from pygame.constants import KEYDOWN, MOUSEBUTTONDOWN
 import random
@@ -25,6 +27,7 @@ class Level1Controller(PygameController):
         self.b = self.view.b
         self.c = self.view.c
         self.d = self.view.d
+        self.bullet1 = self.view.bullet1
         self.a_target = random.randint(0,450)
         self.b_target = random.randint(0,500)
         self.c_target = random.randint(0,500)
@@ -42,7 +45,7 @@ class Level1Controller(PygameController):
 
         self.targets = []
 
-    def change_tempo(self,filepath='squid-game-doll.wav',newSpeed=1.3):
+    def change_tempo(self,filepath='squid-game-doll.wav',newSpeed=1.2):
         mysound = 'fast.wav'
         sound = AudioSegment.from_file(filepath)    
         speed_sound=speed_changer(sound,newSpeed)
@@ -74,9 +77,6 @@ class Level1Controller(PygameController):
                 self.player.x -= 10
         if event.type == MOUSEBUTTONDOWN:
             print(event.pos)
-        # print(self.a.reach_target)
-        
-        # self.view.update()
         return True
 
     def run(self,stop_after = None):
@@ -86,29 +86,19 @@ class Level1Controller(PygameController):
         start = pygame.time.get_ticks()
         clock = pygame.time.Clock()
 
-        # for bullet in bullets :
-        #     if bullet.x < 1200 and bullet.x > 0 :
-        #         bullet.x += bullet.vel 
-        #     else : 
-        #         bullets.pop(bullets.index(bullet))
-
         objestlist = [self.a,self.b,self.c,self.d,self.player]
-        # object_pos = []
         
         round_restart = 4000
 
         pygame.mixer.Channel(0).play(self.sound)
-        # # pygame.mixer.Sound.play(self.sound,loops=0)
         mysound = self.change_tempo()
+
         while running is True:
             music_off = pygame.mixer.Channel(0).get_busy()
             clock.tick(self.FPS)
             self.view.draw()
             self.view.update()
-            # print(pygame.mixer.Channel(0).get_busy())
-            
-            # print(music_off)
-            
+    
             if pygame.mixer.Channel(0).get_busy():
                 start_time = pygame.time.get_ticks() + round_restart
             else:
@@ -120,10 +110,14 @@ class Level1Controller(PygameController):
                     count = count + 1 
                        
 
-            if count > 4:
+            if count > 5 or self.player.alive is False:
                 print('you lost')
                 running = False
             
+            if self.player.x > 1100:
+                print('you win')
+                running = False
+        
             for event in pygame.event.get():
                 running = self.process(event)
 
@@ -135,7 +129,6 @@ class Level1Controller(PygameController):
 
             #this block of code controls cpu movement
             elaspe = start_time - pygame.time.get_ticks()
-            # print(elaspe)
             if music_off:
                 if self.a.reach_target((1100,self.a_target)) is False and self.a.alive:
                     self.a.moveto((1100,self.a_target))
@@ -149,50 +142,43 @@ class Level1Controller(PygameController):
             if elaspe < 3900 and elaspe > 2500:
                 self.s1.moveto((1000,150))
                 self.s2.moveto((1000,350))
-                self.s1.bullet_x = self.s1.x
-                self.s1.bullet_y = self.s1.y
+                self.bullet1.x = self.s1.x
+                self.bullet1.y = self.s1.y
             elif elaspe < 1500 and elaspe > 0:
                 self.s1.moveto((1150,150))
                 self.s2.moveto((1150,350))
-                self.s1.bullet_x = self.s1.x
-                self.s1.bullet_y = self.s1.y
+                self.bullet1.x = self.s1.x
+                self.bullet1.y = self.s1.y
             
             
-            target_list = []
-
-            for item in self.targets:
-                target_list.append((item.x,item.y))
-
-            if elaspe < 3980 and elaspe > 3800:
-                for item in objestlist:
-                    if item.alive:
-                        if ((item.x,item.y)) not in target_list:
-                            self.targets.append(Projectile((int(item.x),int(item.y))))
-            # print(object_pos)
-            # target_pos = []
-            # if elaspe <2400 and elaspe > 2200:
-                # shooter.shoot
-            self.s1.targets = self.targets
+            #save player location into a list 
+            if elaspe < 3980 and elaspe > 3950:
+                print('recording location')
+                self.targets.append([self.player.x,self.player.y])
+    
             if round_end == count:
                 if elaspe < 2000 and elaspe > 0:
-                    for item in objestlist:
-                        if item.alive:
-                            if (int(item.x),int(item.y)) not in target_list:
-                                print(int(item.x),int(item.y))
-                                print(target_list)
-                                self.s1.shoot_status = True
-                                round_end = round_end + 1
-                    
-            
-            if self.s1.shoot_status:
-                if not self.s1.shoot((self.player.x,self.player.y)):
-                    self.s1.shoot((self.player.x,self.player.y))
-                    for item in objestlist:
-                        if item.check_hit():
-                            self.s1.bullet_x = self.s1.x
-                            self.s1.bullet_y = self.s1.y
+                    if self.player.alive:
+                        current_pos = [self.player.x,self.player.y]
+                        if current_pos not in self.targets:
+                            self.bullet1.shoot_status = True 
+                            round_end = round_end + 1
 
+            if self.bullet1.shoot_status:
+                if not self.bullet1.shoot((self.player.x,self.player.y)):
+                    self.bullet1.shoot((self.player.x,self.player.y))
                 else :
-                    self.s1.shoot_status = False
-                
+                    self.bullet1.shoot_status = False
+
+            # print(self.bullet1.hitbox)
+            for item in objestlist:
+                if self.bullet1.check_hit(item):
+                    item.alive = False
+     
+            self.bullet1.update_pos()
+            for item in objestlist:
+                item.update_pos()
+            # print(self.player.hitbox)
+            # print(self.a.hitbox)
+            
             

@@ -1,6 +1,6 @@
 import pygame
 import pydub
-
+from pygame.locals import *
 
 def speed_changer(sound,speed =1.0):
     sound_with_altered_frame_rate = sound._spawn(sound.raw_data, overrides={"frame_rate": int(sound.frame_rate * speed)})
@@ -18,8 +18,7 @@ class Enemy:
         self.movement_speed = ms
         self.display = pygame.image.load('enemy.png')
         self.alive = True
-
-
+        self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
 
     def moveto(self,target:list):
         """give a target location expecting a touple x and y 
@@ -45,6 +44,9 @@ class Enemy:
         # clock.tick(60)
         #update new x pos and y pos
     
+    def update_pos(self):
+        self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
+
     def reach_target(self,target:list):
         if self.x > target[0]:
             return True
@@ -55,8 +57,7 @@ class Enemy:
         #collide
         collide = False
         return collide
-
-
+    
     @property
     def x (self):
         return self._x
@@ -90,11 +91,11 @@ class Shooter:
       self.alive = True
       self.bullet = pygame.image.load('bullet.png')
       self.bullet_vel = 5
-      self.targets = []
-      self.bullet_x = self.x
-      self.bullet_y = self.y
-      self.shoot_status = False
 
+    #   self.bullet_x = self.x
+    #   self.bullet_y = self.y
+    #   self.shoot_status = False
+    #   self.hitbox = self.bullet.get_rect(topleft = (self.bullet_x,self.bullet_y))
     def moveto(self,target:list):
         """give a target location expecting a touple x and y 
         object will move towards that position in a straight line 
@@ -118,23 +119,10 @@ class Shooter:
         else :
             self.x = self.x + x_movement_ratio*move_per_frame
         self.y = self.y - y_movement_ratio*move_per_frame
-
-
-    def shoot(self,target):
-        # print(f'shooting from {(self.x,self.y)}')
-
-        if target[0] < self.bullet_x :
-            self.bullet_x = self.bullet_x - self.bullet_vel
-        if target[1] - self.y > 0 :
-            if target[1] > self.bullet_y :
-                self.bullet_y = self.bullet_y + self.bullet_vel
-        else:
-            if target[1] < self.bullet_y :
-                self.bullet_y = self.bullet_y - self.bullet_vel
-
-        if target[0] >= self.bullet_x:
-            return True
-        return False
+    
+    # def update_pos(self):
+    #     self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self.bullet_x,self.bullet_y))
+    
 
     @property
     def x(self):
@@ -159,12 +147,45 @@ class Projectile:
         self.y = pos[1]
         self.display = pygame.image.load('bullet.png')
         self.bullet_vel = 100
+        self.shoot_status = False
+        self.hitbox = self.display.get_rect(topleft = (self.x,self.y))
+        self.targets = []
+    def update_pos(self):
+        self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self.x,self.y))
 
+    def check_hit(self,object):
+    
+        # print(f'bullet is at {self.hitbox}')
+        # print(f'target is at {object.hitbox}')
+        if abs(self.hitbox[0] - object.hitbox[0]) < object.hitbox[2] and abs(self.hitbox[1] - object.hitbox[1]) < object.hitbox[3]:
+            return True
+        else :
+            return False
+    def shoot(self,target):
+        # print(f'shooting from {(self.x,self.y)}')
+
+        if target[0] < self.x :
+            self.x = self.x - self.bullet_vel
+        if target[1] - self.y > 0 :
+            if target[1] > self.y :
+                self.y = self.y + self.bullet_vel
+        else:
+            if target[1] < self.y :
+                self.y = self.y - self.bullet_vel
+
+        if target[0] >= self.x:
+            return True
+        return False
     def draw(self,window):
         pygame.draw.circle(window,self.color,(self.x,self.y),self.radius)
 
 
         pass
+
+class Target:
+    def __init__(self,pos):
+        self.x = pos[0]
+        self.y = pos[1]
 
 class Player:
     def __init__(self,pos):
@@ -173,13 +194,27 @@ class Player:
         self._x = pos[0]
         self._y = pos[1]
         self.alive = True
+        self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
+    def check_hit(self,object):
+        
+        # print(self.hitbox)
+        # print(object.hitbox[0])
+        if abs(self.hitbox[0] - object.hitbox[0]) < self.hitbox[2] and abs(self.hitbox[1] - object.hitbox[1]) < self.hitbox[3]:
+            return True
+        else :
+            return False
 
+        # print(self.hitbox.colliderect(object))
+        # if collide:
+            # print('True')
+        # if self.hitbox.colliderect(object.hitbox):
+        #     print('hit')
+        # else :
+        #     # print('didnt hit')
+        #     return collide
 
-    def check_hit(self):
-        #collide
-        collide = False
-        print(collide)
-        return collide
+    def update_pos(self):
+        self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
 
     @property
     def x (self):
@@ -204,12 +239,6 @@ class Player:
 
     def __str__(self):
         return f'({self.x},{self.y})'
-
-
-
-
-
-
 
     """create player instance """
 def main():

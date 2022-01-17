@@ -1,4 +1,4 @@
-from models.level1 import Shooter
+from models.level1 import Projectile, Shooter
 from .base import PygameView
 import pygame
 from models import Enemy,Player
@@ -13,7 +13,7 @@ class Level1View(PygameView):
         b = Enemy([50,150],ms=350)
         c = Enemy([50,350],ms=200)
         d = Enemy([50,450],ms=150)
-        
+        bullet1 = Projectile([1150,150])
         self.s1 = Shooter([1150,150])
         self.s2 = Shooter([1150,350])
         # s3 = Shooter(s2)
@@ -24,7 +24,7 @@ class Level1View(PygameView):
         self.d = d 
         #each round is 5 seconds for now 
         self.round_time = 5 
-
+        self.bullet1 = bullet1
         self.doll = pygame.image.load('doll.png')
         self.shooter = pygame.image.load('shooter.png')
         self.character_pos=[50,350]
@@ -40,9 +40,8 @@ class Level1View(PygameView):
         self.window.blit(self.c.display,((self.c.x,self.c.y)))
         self.window.blit(self.d.display,((self.d.x,self.d.y)))
         self.window.blit(self.s1.display,((self.s1.x,self.s1.y)))
-        # self.window.blit(self.s2.display,((self.s2.x,self.s2.y)))
-        self.window.blit(self.s1.bullet,((self.s1.bullet_x,self.s1.bullet_y)))
-        
+        self.window.blit(self.bullet1.display,((self.bullet1.x,self.bullet1.y)))
+        pygame.draw.lines(self.window,(255,0,0),False,[(1100,0),(1100,500)],width=2)
         # self.window.blit(self.doll,((400,200)))
         # self.window.blit(self.shooter,((400,250)))
         # self.window.blit(self.shooter,((100,150)))
