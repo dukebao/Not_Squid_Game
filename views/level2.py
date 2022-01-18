@@ -7,6 +7,7 @@ class Level1View(PygameView):
 
     def __init__(self,view):
         super().__init__(view)
+        # self.character = pygame.image.load('bob.png')
         self.player = Player([50,250])
         a = Enemy([50,50],ms=300)
         b = Enemy([50,150],ms=350)
@@ -15,6 +16,7 @@ class Level1View(PygameView):
         bullet1 = Projectile([1150,150])
         self.s1 = Shooter([1150,150])
         self.s2 = Shooter([1150,350])
+        # s3 = Shooter(s2)
         self.enemylist = [a,b,c,d]
         self.a = a 
         self.b = b
@@ -23,6 +25,8 @@ class Level1View(PygameView):
         #each round is 5 seconds for now 
         self.round_time = 5 
         self.bullet1 = bullet1
+        self.doll = pygame.image.load('doll.png')
+        self.shooter = pygame.image.load('shooter.png')
         self.character_pos=[50,350]
     
 
@@ -39,5 +43,9 @@ class Level1View(PygameView):
         self.window.blit(self.s1.display,((self.s1.x,self.s1.y)))
         self.window.blit(self.bullet1.display,((self.bullet1.x,self.bullet1.y)))
         pygame.draw.lines(self.window,(255,0,0),False,[(1100,0),(1100,500)],width=2)
+        # self.window.blit(self.doll,((400,200)))
+        # self.window.blit(self.shooter,((400,250)))
+        # self.window.blit(self.shooter,((100,150)))
+
 
 

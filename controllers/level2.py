@@ -9,12 +9,12 @@ from pydub import AudioSegment
 from models import speed_changer
 import os
 from models import Projectile
-FILEPATH = 'data/sound/'
+
 class Level1Controller(PygameController):
     """controler for level 1"""
 
     FPS = 60
-    file_path = FILEPATH+'squid-game-doll.wav'
+    file_path = 'squid-game-doll.wav'
     pygame.mixer.init()
     # a = pygame.mixer.Sound('mymusic.ogg')
 
@@ -32,8 +32,8 @@ class Level1Controller(PygameController):
         self.b_target = random.randint(0,500)
         self.c_target = random.randint(0,500)
         self.d_target = random.randint(0,500)
-        self.sound = pygame.mixer.Sound(FILEPATH+'squid-game-doll.wav')
-        self.scan = pygame.mixer.Sound(FILEPATH+'scan.wav')
+        self.sound = pygame.mixer.Sound('squid-game-doll.wav')
+        self.scan = pygame.mixer.Sound('scan.wav')
 
         self.s1 = self.view.s1
         self.s2 = self.view.s2
@@ -45,7 +45,7 @@ class Level1Controller(PygameController):
 
         self.targets = []
 
-    def change_tempo(self,filepath=FILEPATH+'squid-game-doll.wav',newSpeed=1.2):
+    def change_tempo(self,filepath='squid-game-doll.wav',newSpeed=1.2):
         mysound = 'fast.wav'
         sound = AudioSegment.from_file(filepath)    
         speed_sound=speed_changer(sound,newSpeed)

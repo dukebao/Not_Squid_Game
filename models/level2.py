@@ -3,12 +3,6 @@ import pydub
 from pygame.locals import *
 from sqlalchemy import false
 
-FILEDIR = 'data/level1/'
-
-def speed_changer(sound,speed =1.0):
-    sound_with_altered_frame_rate = sound._spawn(sound.raw_data, overrides={"frame_rate": int(sound.frame_rate * speed)})
-    return sound_with_altered_frame_rate
-
 class Enemy:
     """creating the enemy instance
     takes a mandatory position argument 
@@ -19,8 +13,8 @@ class Enemy:
         self._x = pos[0]
         self._y = pos[1]
         self.movement_speed = ms
-        self.display = pygame.image.load(FILEDIR+'enemy.png')
-        self.display_dead = pygame.image.load(FILEDIR+'enemy_dead.png')
+        self.display = pygame.image.load('enemy.png')
+        self.display_dead = pygame.image.load('enemy_dead.png')
         self.alive = True
         self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
 
@@ -87,10 +81,10 @@ class Shooter:
     def __init__(self,pos):
       self._x = pos[0]
       self._y = pos[1]
-      self.display = pygame.image.load(FILEDIR+'shooter.png')
+      self.display = pygame.image.load('shooter.png')
       self.movement_speed = 500
       self.alive = True
-      self.bullet = pygame.image.load(FILEDIR+'bullet.png')
+      self.bullet = pygame.image.load('bullet.png')
       self.bullet_vel = 5
 
     #   self.bullet_x = self.x
@@ -120,10 +114,6 @@ class Shooter:
         else :
             self.x = self.x + x_movement_ratio*move_per_frame
         self.y = self.y - y_movement_ratio*move_per_frame
-    
-    # def update_pos(self):
-    #     self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self.bullet_x,self.bullet_y))
-    
 
     @property
     def x(self):
@@ -142,89 +132,10 @@ class Shooter:
     def __str__(self):
         return f'({self.x},{self.y})'
 
-class Projectile:
-    def __init__(self,pos):
-        self.x = pos[0]
-        self.y = pos[1]
-        self.display = pygame.image.load(FILEDIR+'bullet.png')
-        self.bullet_vel = 1000
-        self.shoot_status = False
-        self.hitbox = self.display.get_rect(topleft = (self.x,self.y))
-        self.targets = []
-        self.alive = True
-    def update_pos(self):
-        self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self.x,self.y))
-
-    def check_hit(self,object):
-
-        if abs(self.hitbox[0] - object.hitbox[0]) < object.hitbox[2] and abs(self.hitbox[1] - object.hitbox[1]) < object.hitbox[3]:
-            return True
-        else :
-            return False
-    #first attempt to produce bulllet movement do not delete
-    def shoot(self,target):
-        clock = pygame.time.Clock()
-        ms_frame = clock.tick(300)
-        x_distance_difference = target[0] - self.x
-        y_distance_difference = target[1] - self.y
-
-        x_movement_ratio = x_distance_difference / (x_distance_difference+ y_distance_difference)
-        y_movement_ratio = y_distance_difference /( x_distance_difference+y_distance_difference)
-
-        move_per_frame = (self.bullet_vel*ms_frame/1000)
-        
-
-        if target[0] < self.x :
-            self.x = self.x - x_movement_ratio*move_per_frame
-
-        if target[1] - self.y > 0 :
-            if target[1] > self.y :
-
-                self.y = self.y - y_movement_ratio*move_per_frame
-        else:
-            if target[1] < self.y :
-                # self.y = self.y - self.bullet_vel
-                self.y = self.y + y_movement_ratio*move_per_frame
-
-        if target[0] >= self.x:
-            return True
-        return False
-
-    def moveto(self,target:list):
-        """give a target location expecting a touple x and y 
-        object will move towards that position in a straight line 
-        at the speed of it's movement speed
-        """
-        clock = pygame.time.Clock()
-        ms_frame = clock.tick(300)
-        #next point calculation
-        #target x and y target[0],target[1]
-
-        x_distance_difference = target[0] - self.x
-        y_distance_difference = target[1] - self.y
-
-        x_movement_ratio = x_distance_difference / (x_distance_difference+ y_distance_difference)
-        y_movement_ratio = y_distance_difference /( x_distance_difference+y_distance_difference)
-
-        move_per_frame = (self.movement_speed*ms_frame/1000)
-        
-        self.x = self.x + x_movement_ratio*move_per_frame
-        self.y = self.y + y_movement_ratio*move_per_frame
-    def draw(self,window):
-        pygame.draw.circle(window,self.color,(self.x,self.y),self.radius)
-
-
-        pass
-
-class Target:
-    def __init__(self,pos):
-        self.x = pos[0]
-        self.y = pos[1]
-
 class Player:
     def __init__(self,pos):
         self.ms = 1000
-        self.display = self.display = pygame.image.load(FILEDIR+'bob.png')
+        self.display = self.display = pygame.image.load('bob.png')
         self._x = pos[0]
         self._y = pos[1]
         self.alive = True

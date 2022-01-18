@@ -1,6 +1,8 @@
 from .base import PygameView
 import pygame
 
+FILEPATH = 'data/menu/'
+
 class MenuView(PygameView):
     """ View Menu selection """
 
@@ -12,7 +14,7 @@ class MenuView(PygameView):
     def draw(self):
         squid_pink = (244,71,136)
         self.window.fill((255, 255, 255))
-        gamelogo = pygame.image.load('Gamelogo.png')
+        gamelogo = pygame.image.load(FILEPATH+'Gamelogo.png')
         self.window.blit(gamelogo,(10,10))
 
         self.easy_button = pygame.draw.circle(self.window,squid_pink,[100,200],80)
@@ -34,7 +36,7 @@ class MenuView(PygameView):
         self.window.blit(self.info_button,(200,410))
 
         #draw selection icon
-        self.selecticon= pygame.image.load('icon.png')
+        self.selecticon= pygame.image.load(FILEPATH+'icon.png')
         selecticonpos = (self.select_pos[0],self.select_pos[1])
         self.window.blit(self.selecticon,selecticonpos)
 
@@ -50,7 +52,7 @@ class GameMenuView(PygameView):
     def draw(self):
         squid_pink = (244,71,136)
         self.window.fill((255, 255, 255))
-        gamelogo = pygame.image.load('Gamelogo.png')
+        gamelogo = pygame.image.load(FILEPATH+'Gamelogo.png')
         self.window.blit(gamelogo,(10,10))
 
         self.start_button = self.render_text_surface('Level 1')
@@ -66,6 +68,6 @@ class GameMenuView(PygameView):
         self.window.blit(self.info_button,(200,440))
 
         #draw selection icon
-        self.selecticon= pygame.image.load('icon.png')
+        self.selecticon= pygame.image.load(FILEPATH+'icon.png')
         selecticonpos = (self.select_pos[0],self.select_pos[1])
         self.window.blit(self.selecticon,selecticonpos)
