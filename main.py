@@ -28,11 +28,11 @@ def main():
             level1_view = Level1View(window)
             level1 = Level1Controller(level1_view)
             level1.run()
-        elif game_menu.selection == 'Level 2': 
+        elif game_menu.selection == 'Level 2':
             print(game_menu.selection)
-        elif game_menu.selection == 'Level 3': 
+        elif game_menu.selection == 'Level 3':
             print(game_menu.selection)
-        elif game_menu.selection == 'Level 4': 
+        elif game_menu.selection == 'Level 4':
             print(game_menu.selection)
 
     elif main_menu.selection == 'Information':
@@ -40,7 +40,7 @@ def main():
     elif main_menu.selection == 'Control':
         print(main_menu.selection)
 
-    
+
 
 if __name__ == "__main__":
     main()

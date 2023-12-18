@@ -1,12 +1,11 @@
 import pygame
 import pydub
 from pygame.locals import *
-from sqlalchemy import false
 
 class Enemy:
     """creating the enemy instance
-    takes a mandatory position argument 
-    movement speed is set to default 5 for level 1 enemy 
+    takes a mandatory position argument
+    movement speed is set to default 5 for level 1 enemy
 
     """
     def __init__(self,pos:list,ms=300):
@@ -19,8 +18,8 @@ class Enemy:
         self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
 
     def moveto(self,target:list):
-        """give a target location expecting a touple x and y 
-        object will move towards that position in a straight line 
+        """give a target location expecting a touple x and y
+        object will move towards that position in a straight line
         at the speed of it's movement speed
         """
         clock = pygame.time.Clock()
@@ -35,10 +34,10 @@ class Enemy:
         y_movement_ratio = y_distance_difference /( x_distance_difference+y_distance_difference)
 
         move_per_frame = (self.movement_speed*ms_frame/1000)
-        
+
         self.x = self.x + x_movement_ratio*move_per_frame
         self.y = self.y + y_movement_ratio*move_per_frame
-    
+
     def update_pos(self):
         self.hitbox =  self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
 
@@ -47,19 +46,19 @@ class Enemy:
             return True
         else :
             return False
-    
+
     def check_hit(self):
         #collide
         collide = False
         return collide
-    
+
     @property
     def x (self):
         return self._x
     @property
     def y(self):
         return self._y
-    
+
     @x.setter
     def x(self,value):
         if value >= 0 :
@@ -92,8 +91,8 @@ class Shooter:
     #   self.shoot_status = False
     #   self.hitbox = self.bullet.get_rect(topleft = (self.bullet_x,self.bullet_y))
     def moveto(self,target:list):
-        """give a target location expecting a touple x and y 
-        object will move towards that position in a straight line 
+        """give a target location expecting a touple x and y
+        object will move towards that position in a straight line
         at the speed of it's movement speed
         """
         clock = pygame.time.Clock()
@@ -108,7 +107,7 @@ class Shooter:
             x_movement_ratio = 0
             y_movement_ratio = 0
         move_per_frame = (self.movement_speed*ms_frame/1000)
-        
+
         if x_distance_difference < 0 :
             self.x = self.x - x_movement_ratio*move_per_frame
         else :
@@ -121,14 +120,14 @@ class Shooter:
     @property
     def y(self):
         return self._y
-    
+
     @x.setter
     def x(self,value):
         self._x = value
     @y.setter
     def y(self,value):
         self._y = value
-    
+
     def __str__(self):
         return f'({self.x},{self.y})'
 
@@ -141,7 +140,7 @@ class Player:
         self.alive = True
         self.hitbox = self.display.get_rect(topleft = (self._x,self._y))
     def check_hit(self,object):
-        
+
         if abs(self.hitbox[0] - object.hitbox[0]) < self.hitbox[2] and abs(self.hitbox[1] - object.hitbox[1]) < self.hitbox[3]:
             return True
         else :
@@ -156,7 +155,7 @@ class Player:
     @property
     def y(self):
         return self._y
-    
+
     @x.setter
     def x(self,value):
         if value >= 0 :
